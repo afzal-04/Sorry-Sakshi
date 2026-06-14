@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Something for you...</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=Inter:wght@300;400;500&display=swap');
+
+  *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+  :root {
+    --bg: #0e0b14;
+    --card: #16121f;
+    --border: rgba(255,255,255,0.07);
+    --text: #f0eaf8;
+    --muted: #9d8fb0;
+    --accent: #c084fc;
+    --rose: #f472b6;
+    --warm: #fbbf24;
+  }
+
+  html, body {
+    min-height: 100vh;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    overflow-x: hidden;
+  }
+
+  /* ── STARS BG ── */
+  #stars {
+    position: fixed; inset: 0; z-index: 0;
+    pointer-events: none; overflow: hidden;
+  }
+  .star {
+    position: absolute; border-radius: 50%;
+    background: #fff; animation: twinkle var(--d) ease-in-out infinite alternate;
+    opacity: 0;
+  }
+  @keyframes twinkle { from { opacity: 0; } to { opacity: var(--o); } }
+
+  /* ── PETALS ── */
+  .petal {
+    position: fixed; top: -40px; z-index: 1; pointer-events: none;
+    font-size: 18px; animation: fall var(--fd) linear var(--fd2) infinite;
+    opacity: 0.7;
+  }
+  @keyframes fall {
+    0%   { transform: translateY(-40px) rotate(0deg); opacity: 0.7; }
+    100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
+  }
+
+  /* ── LAYOUT ── */
+  .scene {
+    position: relative; z-index: 2;
+    min-height: 100vh;
+    display: flex; align-items: center; justify-content: center;
+    padding: 40px 20px;
+  }
+
+  /* ── SCREENS ── */
+  .screen {
+    display: none;
+    width: 100%; max-width: 540px;
+    text-align: center;
+    animation: fadeUp 0.7s ease both;
+  }
+  .screen.active { display: block; }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(28px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── CARD ── */
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    padding: 40px 36px;
+    margin-bottom: 28px;
+  }
+
+  /* ── ICON CIRCLE ── */
+  .icon-circle {
+    width: 72px; height: 72px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 32px; margin: 0 auto 24px;
+  }
+  .ic-purple { background: rgba(192,132,252,0.12); border: 1px solid rgba(192,132,252,0.25); }
+  .ic-rose   { background: rgba(244,114,182,0.12); border: 1px solid rgba(244,114,182,0.25); }
+  .ic-warm   { background: rgba(251,191,36,0.12);  border: 1px solid rgba(251,191,36,0.25); }
+  .ic-green  { background: rgba(52,211,153,0.12);  border: 1px solid rgba(52,211,153,0.25); }
+
+  /* ── TYPOGRAPHY ── */
+  .eyebrow {
+    font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--muted); margin-bottom: 12px; font-weight: 500;
+  }
+  h1 {
+    font-family: 'Lora', serif;
+    font-size: clamp(22px, 5vw, 30px);
+    font-weight: 600; line-height: 1.3;
+    color: var(--text); margin-bottom: 16px;
+  }
+  h1 em { font-style: italic; color: var(--accent); }
+  .body-text {
+    font-family: 'Lora', serif;
+    font-size: 16px; line-height: 1.85;
+    color: #c4b8d8; font-weight: 400;
+  }
+  .body-text strong { color: var(--text); font-weight: 600; }
+
+  /* ── QUOTE ── */
+  .quote {
+    border-left: 3px solid var(--accent);
+    margin: 20px 0; padding: 12px 18px;
+    background: rgba(192,132,252,0.06);
+    border-radius: 0 12px 12px 0;
+    font-family: 'Lora', serif;
+    font-style: italic; font-size: 15px;
+    color: #d4c4e8; text-align: left; line-height: 1.7;
+  }
+
+  /* ── DIVIDER ── */
+  .divider {
+    display: flex; align-items: center; gap: 12px;
+    margin: 22px 0; color: var(--muted); font-size: 13px;
+  }
+  .divider::before, .divider::after {
+    content: ''; flex: 1; height: 1px; background: var(--border);
+  }
+
+  /* ── PROGRESS DOTS ── */
+  .dots {
+    display: flex; justify-content: center; gap: 8px; margin-bottom: 24px;
+  }
+  .dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: rgba(255,255,255,0.15); transition: all 0.4s;
+  }
+  .dot.active { background: var(--accent); transform: scale(1.2); }
+  .dot.done   { background: rgba(192,132,252,0.4); }
+
+  /* ── BUTTON ── */
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center;
+    gap: 8px; padding: 14px 32px; border-radius: 50px;
+    font-size: 15px; font-weight: 500; cursor: pointer;
+    border: none; transition: all 0.2s; font-family: 'Inter', sans-serif;
+    letter-spacing: 0.01em;
+  }
+  .btn-primary {
+    background: var(--accent); color: #0e0b14;
+  }
+  .btn-primary:hover { background: #a855f7; transform: translateY(-2px); }
+  .btn-primary:active { transform: scale(0.97); }
+  .btn-ghost {
+    background: transparent; color: var(--muted);
+    border: 1px solid var(--border); margin-top: 12px;
+  }
+  .btn-ghost:hover { color: var(--text); border-color: rgba(255,255,255,0.2); }
+  .btn-rose {
+    background: var(--rose); color: #fff;
+  }
+  .btn-rose:hover { background: #ec4899; transform: translateY(-2px); }
+  .btn-wrap { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+
+  /* ── STEP 1 — LOCK SCREEN ── */
+  .lock-phone {
+    background: linear-gradient(160deg, #1a1030 0%, #0e0b14 100%);
+    border: 1px solid var(--border); border-radius: 32px;
+    padding: 36px 28px 28px; margin-bottom: 28px; position: relative;
+    overflow: hidden;
+  }
+  .lock-time {
+    font-size: 52px; font-weight: 300; letter-spacing: -2px;
+    color: var(--text); line-height: 1; margin-bottom: 4px;
+  }
+  .lock-date { font-size: 14px; color: var(--muted); margin-bottom: 28px; }
+  .notif {
+    background: rgba(255,255,255,0.07); backdrop-filter: blur(10px);
+    border: 1px solid var(--border); border-radius: 16px;
+    padding: 14px 16px; text-align: left; display: flex; gap: 12px;
+    align-items: flex-start;
+    animation: slideIn 0.5s 0.8s ease both;
+  }
+  @keyframes slideIn { from { opacity:0; transform:translateY(-10px); } to { opacity:1; transform:none; } }
+  .notif-icon {
+    width: 36px; height: 36px; border-radius: 10px;
+    background: linear-gradient(135deg, var(--accent), var(--rose));
+    display: flex; align-items: center; justify-content: center; font-size: 18px;
+    flex-shrink: 0;
+  }
+  .notif-app { font-size: 11px; color: var(--muted); margin-bottom: 2px; }
+  .notif-title { font-size: 14px; font-weight: 500; color: var(--text); margin-bottom: 2px; }
+  .notif-body { font-size: 13px; color: var(--muted); line-height: 1.4; }
+
+  /* ── STEP 3 — REASON PILLS ── */
+  .pills {
+    display: flex; flex-wrap: wrap; gap: 10px;
+    justify-content: center; margin: 20px 0;
+  }
+  .pill {
+    padding: 8px 16px; border-radius: 50px; font-size: 14px;
+    background: rgba(255,255,255,0.05); border: 1px solid var(--border);
+    color: #c4b8d8; display: flex; align-items: center; gap: 6px;
+    animation: popIn 0.4s ease both;
+  }
+  @keyframes popIn { from { opacity:0; transform:scale(0.8); } to { opacity:1; transform:scale(1); } }
+  .pill:nth-child(1) { animation-delay: 0.1s; }
+  .pill:nth-child(2) { animation-delay: 0.2s; }
+  .pill:nth-child(3) { animation-delay: 0.3s; }
+  .pill:nth-child(4) { animation-delay: 0.4s; }
+  .pill:nth-child(5) { animation-delay: 0.5s; }
+  .pill:nth-child(6) { animation-delay: 0.6s; }
+
+  /* ── STEP 4 — SORRY LINES ── */
+  .sorry-lines { list-style: none; text-align: left; margin: 20px 0; }
+  .sorry-lines li {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 12px 0; border-bottom: 1px solid var(--border);
+    font-family: 'Lora', serif; font-size: 15px; color: #c4b8d8;
+    line-height: 1.6; animation: fadeUp 0.5s ease both;
+  }
+  .sorry-lines li:last-child { border-bottom: none; }
+  .sorry-lines li:nth-child(1) { animation-delay: 0.1s; }
+  .sorry-lines li:nth-child(2) { animation-delay: 0.25s; }
+  .sorry-lines li:nth-child(3) { animation-delay: 0.4s; }
+  .sorry-lines li:nth-child(4) { animation-delay: 0.55s; }
+  .check { font-size: 16px; flex-shrink: 0; margin-top: 2px; }
+
+  /* ── STEP 5 — PROMISE CARDS ── */
+  .promise-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 20px 0; }
+  .promise-card {
+    background: rgba(255,255,255,0.04); border: 1px solid var(--border);
+    border-radius: 16px; padding: 16px 14px; text-align: left;
+    animation: fadeUp 0.5s ease both;
+  }
+  .promise-card:nth-child(1) { animation-delay: 0.1s; }
+  .promise-card:nth-child(2) { animation-delay: 0.2s; }
+  .promise-card:nth-child(3) { animation-delay: 0.3s; }
+  .promise-card:nth-child(4) { animation-delay: 0.4s; }
+  .promise-icon { font-size: 22px; margin-bottom: 8px; }
+  .promise-title { font-size: 13px; font-weight: 500; color: var(--text); margin-bottom: 4px; }
+  .promise-text { font-size: 12px; color: var(--muted); line-height: 1.5; }
+
+  /* ── STEP 6 — FINAL ── */
+  .final-heart {
+    font-size: 64px; display: block; margin: 0 auto 20px;
+    animation: heartbeat 1.2s ease-in-out infinite;
+  }
+  @keyframes heartbeat {
+    0%, 100% { transform: scale(1); }
+    15%       { transform: scale(1.15); }
+    30%       { transform: scale(1); }
+    45%       { transform: scale(1.08); }
+    60%       { transform: scale(1); }
+  }
+  .big-sorry {
+    font-family: 'Lora', serif;
+    font-size: clamp(32px, 8vw, 52px);
+    font-style: italic; font-weight: 600;
+    background: linear-gradient(135deg, var(--accent), var(--rose));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text; margin-bottom: 20px; display: block;
+  }
+
+  /* ── REPLY SECTION ── */
+  .reply-section { margin-top: 16px; }
+  .reply-btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+  .reply-merged {
+    display: none; text-align: center; padding: 24px;
+    background: rgba(52,211,153,0.08); border: 1px solid rgba(52,211,153,0.2);
+    border-radius: 20px; margin-top: 20px;
+  }
+  .reply-merged p { font-family: 'Lora', serif; font-size: 17px; color: #6ee7b7; line-height: 1.7; }
+  .reply-later {
+    display: none; text-align: center; padding: 20px;
+    background: rgba(251,191,36,0.06); border: 1px solid rgba(251,191,36,0.15);
+    border-radius: 20px; margin-top: 20px;
+  }
+  .reply-later p { font-family: 'Lora', serif; font-size: 15px; color: #fcd34d; line-height: 1.7; }
+
+  /* ── FOOTER ── */
+  .footer-note {
+    font-size: 12px; color: var(--muted); margin-top: 12px;
+    letter-spacing: 0.03em; opacity: 0.6;
+  }
+
+  @media (max-width: 420px) {
+    .card { padding: 28px 20px; }
+    .promise-grid { grid-template-columns: 1fr; }
+    .lock-time { font-size: 40px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- STARS -->
+<div id="stars"></div>
+
+<!-- PETALS -->
+<div id="petals"></div>
+
+<div class="scene">
+  <div style="width:100%;max-width:540px;">
+
+    <!-- PROGRESS DOTS -->
+    <div class="dots" id="dots"></div>
+
+    <!-- ═══ SCREEN 1: Knock knock ═══ -->
+    <div class="screen active" id="s1">
+      <div class="lock-phone">
+        <div class="lock-time" id="clock">--:--</div>
+        <div class="lock-date" id="dateline">Today</div>
+        <div class="notif">
+          <div class="notif-icon">💌</div>
+          <div>
+            <div class="notif-app">A message — just for you</div>
+            <div class="notif-title">Someone wants to say something</div>
+            <div class="notif-body">It comes from the heart. Tap to open...</div>
+          </div>
+        </div>
+      </div>
+      <div class="btn-wrap">
+        <button class="btn btn-primary" onclick="go(2)">Open it 💌</button>
+        <p class="footer-note">it's safe, i promise</p>
+      </div>
+    </div>
+
+    <!-- ═══ SCREEN 2: I need to tell you something ═══ -->
+    <div class="screen" id="s2">
+      <div class="card">
+        <div class="eyebrow">a letter, from me to you</div>
+        <h1>I need to tell you <em>something</em>.</h1>
+        <p class="body-text">
+          I've been thinking about you. About us. About what happened.<br/><br/>
+          And I couldn't just text you a sorry and move on like nothing happened.
+          You deserve more than that. You deserve something <strong>real</strong>.
+        </p>
+        <div class="divider">so here it is</div>
+        <p class="body-text">
+          I made a mistake. And this is me — sitting with that, owning it, and coming to you with my whole heart open.
+        </p>
+      </div>
+      <div class="btn-wrap">
+        <button class="btn btn-primary" onclick="go(3)">Keep reading →</button>
+      </div>
+    </div>
+
+    <!-- ═══ SCREEN 3: What I did wrong ═══ -->
+    <div class="screen" id="s3">
+      <div class="card">
+        <div class="icon-circle ic-rose">💔</div>
+        <div class="eyebrow">what I got wrong</div>
+        <h1>I wasn't the person <em>you deserved.</em></h1>
+        <p class="body-text" style="margin-bottom:18px;">
+          I've been honest with myself, and here's what I know I did wrong:
+        </p>
+        <div class="pills">
+          <div class="pill">😶 I didn't listen enough</div>
+          <div class="pill">💨 I was careless with your feelings</div>
+          <div class="pill">😤 I let my ego get in the way</div>
+          <div class="pill">🚶 I wasn't fully present for you</div>
+          <div class="pill">🤐 I said things I shouldn't have</div>
+          <div class="pill">🙈 I made you feel unseen</div>
+        </div>
+        <div class="quote">
+          "You never deserved any of that. Not even a little bit."
+        </div>
+      </div>
+      <div class="btn-wrap">
+        <button class="btn btn-primary" onclick="go(4)">Continue →</button>
+      </div>
+    </div>
+
+    <!-- ═══ SCREEN 4: I'm sorry for... ═══ -->
+    <div class="screen" id="s4">
+      <div class="card">
+        <div class="icon-circle ic-purple">🌙</div>
+        <div class="eyebrow">from the bottom of my heart</div>
+        <h1>I am <em>so sorry.</em></h1>
+        <ul class="sorry-lines">
+          <li><span class="check">💜</span> I'm sorry for hurting you when you only ever deserved kindness from me.</li>
+          <li><span class="check">💜</span> I'm sorry for the moments I made you feel small, unseen, or unimportant.</li>
+          <li><span class="check">💜</span> I'm sorry for not saying this sooner — you didn't deserve to wait for an apology.</li>
+          <li><span class="check">💜</span> I'm sorry for making you question something that should have felt safe.</li>
+        </ul>
+      </div>
+      <div class="btn-wrap">
+        <button class="btn btn-primary" onclick="go(5)">There's more →</button>
+      </div>
+    </div>
+
+    <!-- ═══ SCREEN 5: My promises ═══ -->
+    <div class="screen" id="s5">
+      <div class="card">
+        <div class="icon-circle ic-warm">🌟</div>
+        <div class="eyebrow">not just words</div>
+        <h1>Here's what I <em>promise</em> you.</h1>
+        <p class="body-text" style="margin-bottom:4px;">These aren't words to make you feel better right now. They're commitments I mean with everything in me.</p>
+        <div class="promise-grid">
+          <div class="promise-card">
+            <div class="promise-icon">👂</div>
+            <div class="promise-title">I will listen</div>
+            <div class="promise-text">Really listen. Not to reply — to understand you.</div>
+          </div>
+          <div class="promise-card">
+            <div class="promise-icon">🛡️</div>
+            <div class="promise-title">I will protect you</div>
+            <div class="promise-text">Your feelings will never be an afterthought again.</div>
+          </div>
+          <div class="promise-card">
+            <div class="promise-icon">🌱</div>
+            <div class="promise-title">I will grow</div>
+            <div class="promise-text">I am working on being better — for you, and for us.</div>
+          </div>
+          <div class="promise-card">
+            <div class="promise-icon">🤝</div>
+            <div class="promise-title">I will show up</div>
+            <div class="promise-text">Present, patient, and choosing you — always.</div>
+          </div>
+        </div>
+      </div>
+      <div class="btn-wrap">
+        <button class="btn btn-primary" onclick="go(6)">One last thing →</button>
+      </div>
+    </div>
+
+    <!-- ═══ SCREEN 6: The finale ═══ -->
+    <div class="screen" id="s6">
+      <div class="card">
+        <span class="final-heart">💜</span>
+        <span class="big-sorry">I'm sorry.</span>
+        <p class="body-text">
+          Not because I have to say it. But because <strong>you matter to me</strong> — more than my pride, more than being right, more than anything.
+        </p>
+        <div class="divider">♡</div>
+        <p class="body-text">
+          I don't know what happens next. But I know I don't want to lose you. And I know you deserved so much better than what I gave you.
+        </p>
+        <div class="quote">
+          "This page will stay here. Just like my feelings for you — not going anywhere."
+        </div>
+
+        <div class="reply-section">
+          <p class="body-text" style="font-size:14px; color:var(--muted); margin-bottom:16px;">How are you feeling right now?</p>
+          <div class="reply-btns">
+            <button class="btn btn-rose" onclick="reply('forgive')">💜 I forgive you</button>
+            <button class="btn btn-ghost" onclick="reply('time')">I need more time</button>
+          </div>
+          <div class="reply-merged" id="reply-forgive">
+            <p>💚 That means everything to me.<br/>Thank you for giving me another chance.<br/>I will not take it for granted. Ever.</p>
+          </div>
+          <div class="reply-later" id="reply-time">
+            <p>🌙 That's okay. I'll be right here.<br/>Take all the time you need.<br/>I'm not going anywhere.</p>
+          </div>
+        </div>
+      </div>
+      <p class="footer-note" style="text-align:center; margin-top:8px;">Made with love — just for you 💌</p>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const TOTAL = 6;
+let current = 1;
+
+function buildStars() {
+  const c = document.getElementById('stars');
+  for (let i = 0; i < 120; i++) {
+    const s = document.createElement('div');
+    s.className = 'star';
+    const size = Math.random() * 2.5 + 0.5;
+    s.style.cssText = `
+      width:${size}px; height:${size}px;
+      left:${Math.random()*100}%;
+      top:${Math.random()*100}%;
+      --d:${2+Math.random()*4}s;
+      --o:${0.2+Math.random()*0.6};
+      animation-delay:${Math.random()*4}s;
+    `;
+    c.appendChild(s);
+  }
+}
+
+function buildPetals() {
+  const c = document.getElementById('petals');
+  const emojis = ['🌸','✿','❀','🌺','💮'];
+  for (let i = 0; i < 12; i++) {
+    const p = document.createElement('div');
+    p.className = 'petal';
+    p.textContent = emojis[Math.floor(Math.random()*emojis.length)];
+    p.style.cssText = `
+      left:${Math.random()*100}%;
+      font-size:${12+Math.random()*14}px;
+      --fd:${6+Math.random()*8}s;
+      --fd2:${Math.random()*8}s;
+    `;
+    c.appendChild(p);
+  }
+}
+
+function buildDots() {
+  const d = document.getElementById('dots');
+  d.innerHTML = '';
+  for (let i = 1; i <= TOTAL; i++) {
+    const dot = document.createElement('div');
+    dot.className = 'dot' + (i < current ? ' done' : i === current ? ' active' : '');
+    d.appendChild(dot);
+  }
+}
+
+function go(n) {
+  document.getElementById('s' + current).classList.remove('active');
+  current = n;
+  const el = document.getElementById('s' + n);
+  el.classList.add('active');
+  el.style.animation = 'none';
+  requestAnimationFrame(() => { el.style.animation = ''; });
+  buildDots();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function reply(type) {
+  document.querySelector('.reply-btns').style.display = 'none';
+  if (type === 'forgive') {
+    document.getElementById('reply-forgive').style.display = 'block';
+    burst();
+  } else {
+    document.getElementById('reply-time').style.display = 'block';
+  }
+}
+
+function burst() {
+  const emojis = ['💜','✨','🌸','💫','🌟','💖'];
+  for (let i = 0; i < 22; i++) {
+    const el = document.createElement('div');
+    el.style.cssText = `
+      position:fixed; z-index:999; pointer-events:none;
+      left:${30+Math.random()*40}%;
+      top:${20+Math.random()*40}%;
+      font-size:${18+Math.random()*20}px;
+      animation: burstOut ${0.8+Math.random()*0.7}s ease forwards;
+      animation-delay:${Math.random()*0.5}s;
+    `;
+    el.textContent = emojis[Math.floor(Math.random()*emojis.length)];
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), 2000);
+  }
+}
+
+function setClock() {
+  const now = new Date();
+  let h = now.getHours(), m = now.getMinutes();
+  const ampm = h >= 12 ? 'PM' : 'AM';
+  h = h % 12 || 12;
+  document.getElementById('clock').textContent = `${h}:${String(m).padStart(2,'0')}`;
+  const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  document.getElementById('dateline').textContent =
+    `${days[now.getDay()]}, ${months[now.getMonth()]} ${now.getDate()}  ${ampm}`;
+}
+
+const style = document.createElement('style');
+style.textContent = `@keyframes burstOut {
+  0%   { opacity:1; transform:translate(0,0) scale(0.5); }
+  60%  { opacity:1; }
+  100% { opacity:0; transform:translate(${Math.random()>0.5?'':'-'}${40+Math.random()*60}px, ${-60-Math.random()*80}px) scale(1.2); }
+}`;
+document.head.appendChild(style);
+
+buildStars();
+buildPetals();
+buildDots();
+setClock();
+setInterval(setClock, 10000);
+</script>
+</body>
+</html>
